@@ -17,7 +17,7 @@ def convertDocxToText(inputPath, outputPath):
             textFilename = os.path.join(PROJECT_PATH, SAVE_PATH, d.split(".")[0] + ".txt")
             with open(textFilename, "w", encoding="utf-8") as textFile:
                 for para in document.paragraphs: 
-                    textFile.write(para.text)
+                    textFile.write(para.text + "\n")
             print("Completed " + docxFilename)
     print("-------------------------------------")
     print("Completed")
