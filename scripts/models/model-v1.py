@@ -137,7 +137,7 @@ if __name__ == "__main__":
     # resume = resumeData[0]["particular_words"]
     # resumeString = ' '.join(resume)
 
-    resume = resumeData[0]["bi_grams"] + resumeData[0]["tri_grams"]
+    resume = resumeData[0]["bi_grams"] # + resumeData[0]["tri_grams"]
     resumeString = resume
 
     jds = {}
@@ -145,7 +145,7 @@ if __name__ == "__main__":
     for i in range(len(jobsData)): # len(jobsData)):
         # job = jobsData[i]["particular_words"]
         # jobString = ' '.join(job)
-        job = jobsData[i]["bi_grams"] + jobsData[i]["tri_grams"]
+        job = jobsData[i]["bi_grams"] # + jobsData[i]["tri_grams"]
         jobString = job
         jds[jobsData[i]["title"]] = get_similarity_score2(resumeString, jobString)
 
