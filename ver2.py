@@ -16,7 +16,7 @@ TaggedDocument = gensim.models.doc2vec.TaggedDocument
 
 def get_corpus():
     sentences=[]
-    for root, dirs, files in os.walk('Resumes'):
+    for root, dirs, files in os.walk('data/raw_resumes'):
         for name in files:
             file_path = os.path.join(root, name)
             text = read_docx(file_path)
@@ -46,7 +46,7 @@ if __name__ == '__main__':
     x_train = get_corpus()
     model_dm = train(x_train)
     model_dm = Doc2Vec.load("model_doc2vec")
-    with open('JD_Java_Developer.txt', 'r') as f:
+    with open('JobDescription.txt', 'r') as f:
         text_test = f.read()
     text_cut = jieba.cut(text_test)
     text_raw = []
@@ -66,6 +66,3 @@ if __name__ == '__main__':
 
         print(words, sim, len(sentence[0]))
         print('------------------------------------------------------------------------------')
-
-
-

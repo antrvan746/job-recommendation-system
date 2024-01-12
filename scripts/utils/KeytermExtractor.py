@@ -7,7 +7,7 @@ class KeytermExtractor:
     A class for extracting keyterms from a given text using various algorithms.
     """
 
-    def __init__(self, raw_text: str, top_n_values: int = 20):
+    def __init__(self, raw_text: str, top_n_values: int = 30):
         """
         Initialize the KeytermExtractor object.
 

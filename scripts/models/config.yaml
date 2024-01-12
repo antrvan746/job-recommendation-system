@@ -1,0 +1,10 @@
+yaml
+
+cohere: 
+  api_key: 
+    fx9JHiH5AqOnM1v9X3o0na1Ra1yIAbK1lk5VHhqA 
+qdrant:
+  api_key: 
+    dlOX5NbYC3DMM3LhtihM1DeUabvTDaIiryAewmtQxCIrHynZFTJ0VQ 
+  url: 
+    https://dcbe9d88-0477-4e78-b5cc-95a2124f61bd.us-east4-0.gcp.cloud.qdrant.io:6333
