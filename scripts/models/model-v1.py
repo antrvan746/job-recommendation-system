@@ -12,14 +12,17 @@ from numpy.linalg import norm
 
 
 PROJECT_PATH = "d:\My Work\My Subjects\Do an tot nghiep\code\job-recommendation-system"
-RESUME_DATA_PATH = "data\\resumes\\resumes2.json"
-JOB_DESC_PATH = "data\\jds\\jobs2.json"
+RESUME_DATA_PATH = "data\\resumes\\resumes3.json"
+JOB_DESC_PATH = "data\\jds\\jobs5.json"
 CONFIG_PATH = "scripts\\models\\config.yml"
 
-cos_sim = lambda a,b : (a @ b.T) / (norm(a) * norm(b))
+
+def cos_sim(a, b): return (a @ b.T) / (norm(a) * norm(b))
+
 
 model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
 model.max_seq_length = 500
+
 
 def readDoc(path):
     with open(path) as f:
@@ -39,8 +42,10 @@ def readDoc(path):
 #         print("Error when reading file")
 #     return None
 
+
 jobsData = readDoc(os.path.join(PROJECT_PATH, JOB_DESC_PATH))
 resumeData = readDoc(os.path.join(PROJECT_PATH, RESUME_DATA_PATH))
+
 
 class QdrantSearch:
     def __init__(self, resumes, jd):
@@ -72,13 +77,16 @@ class QdrantSearch:
             embeddings = self.cohere.embed([text], "large").embeddings
             return list(map(float, embeddings[0])), len(embeddings[0])
         except Exception as e:
-            self.logger.error(f"Error getting embeddings: {e}", exc_info=True)
+            print(f"Error getting embeddings: {e}")
+            return [None, None]
 
     def update_qdrant(self):
         vectors = []
         ids = []
         for i, resume in enumerate(self.resumes):
             vector, size = self.get_embedding(resume)
+            if (vector == None):
+                continue
             vectors.append(vector)
             ids.append(i)
         try:
@@ -92,7 +100,7 @@ class QdrantSearch:
                 )
             )
         except Exception as e:
-            self.logger.error(f"Error upserting the vectors to the qdrant collection: {e}", exc_info=True)
+            print(f"Error upserting the vectors to the qdrant collection: {e}")
 
     def search(self):
         vector, _ = self.get_embedding(self.jd)
@@ -121,10 +129,12 @@ def get_similarity_score(resume_string, job_description_string):
     # print("Finished getting similarity score")
     return search_result
 
+
 def calculateMatchingPercentage(resume, jobDescription):
     # Calculate matching percentage
     matching_percentage = cos_sim(resume, jobDescription) * 100
     return matching_percentage
+
 
 def get_similarity_score2(resume_string, job_description_string):
     resumeEmbed = model.encode(resume_string)
@@ -132,27 +142,47 @@ def get_similarity_score2(resume_string, job_description_string):
     return calculateMatchingPercentage(resumeEmbed, jdEmbed)
 
 
+def get_similarity_score3(resume_string, job_description_string):
+    pass
+
+
 if __name__ == "__main__":
     start = time.time()
     # resume = resumeData[0]["particular_words"]
     # resumeString = ' '.join(resume)
+    # resume = resumeData[16]["particular_words"] # + resumeData[0]["tri_grams"]
+    # resumeString = ' '.join(resume)
 
-    resume = resumeData[0]["bi_grams"] # + resumeData[0]["tri_grams"]
-    resumeString = resume
+    resume = resumeData[16]["keyterms_textrank"]
+    resumeString = ', '.join(map(lambda item: item[0], resume))
+    # resumeString = ', '.join(resumeData[0]["bi_grams"][1:len(resumeData[0]["bi_grams"])-1])
 
     jds = {}
 
-    for i in range(len(jobsData)): # len(jobsData)):
+    # jobStrings = []
+    for i in range(len(jobsData)):  # len(jobsData)):
         # job = jobsData[i]["particular_words"]
         # jobString = ' '.join(job)
-        job = jobsData[i]["bi_grams"] # + jobsData[i]["tri_grams"]
-        jobString = job
-        jds[jobsData[i]["title"]] = get_similarity_score2(resumeString, jobString)
+        # job = jobsData[i]["particular_words"] # + jobsData[i]["tri_grams"]
+        # jobString = ' '.join(job)
+
+        job = jobsData[i]["keyterms_textrank"]
+        jobString = jobsData[i]["title"] + " " + jobsData[i]["skills"] + " "
+        jobString += ', '.join(map(lambda item: item[0], job))
+
+        # jobStrings.append(jobString)
+        jds[jobsData[i]["title"]] = get_similarity_score2(
+            resumeString, jobString)
 
     ordered_dict = OrderedDict(sorted(jds.items(), key=lambda item: -item[1]))
     end = time.time()
-    print("Time train and sort data: ", (end - start)/ 60)
+    print(resumeData[16]["position"])
+    print("Time train and sort data: ", (end - start) / 60)
     print("-----------------------------------------------------------")
+
+    # final_result = get_similarity_score2(resumeString, resumeString)
+    # for r in final_result:
+    #     print(r)
 
     for key in ordered_dict:
         print(key, "\t\t", ordered_dict[key])

@@ -11,20 +11,21 @@ from scripts.utils.KeytermExtractor import KeytermExtractor
 
 PROJECT_PATH = "d:\My Work\My Subjects\Do an tot nghiep\code\job-recommendation-system"
 INPUT_PATH = "data\\jds\\jobs.json"
-SAVE_PATH = "data\\jds\\jobs2.json"
+SAVE_PATH = "data\\jds\\jobs5.json"
 
-custom_words = ["reasons", "to", "join", "salary", "loyalty", "bonus", "additional", "health", "insurance", "attractive", "net",  "package", "yearly", "premium", "kpi", "opportunity", "job", "work", "allowance", "paid", "leave", "responsible", "experience", "year", "day", "budget", "month", "months", "time", "work", "project", "month"]
+TOP_N_VALUES = 20
+
+custom_words = ["reasons", "to", "join", "salary", "loyalty", "bonus", "additional", "health", "insurance", "attractive", "net",  "package", "yearly", "premium", "kpi", "opportunity", "job", "work", "allowance", "paid", "leave", "responsible", "experience", "year", "day", "budget", "month", "months", "time", "work", "project", "month", "nbsp;", "years", "day", "%", "nbsp", "&", "\u200b"]
 
 def extractJobDescriptionFromJobJSON(data):
-    data["description"] = TextCleaner.remove_entities(data["description"])
-    data["description"] = TextCleaner.remove_custom_words(data["description"], custom_words)
     data["description"] = TextCleaner.remove_stopwords(data["description"])
+    data["description"] = TextCleaner.remove_custom_words(data["description"], custom_words)
+    data["description"] = TextCleaner.clean_text(data["description"])
     # data = TextCleaner.remove_stopwords(data)
     extractor = DataExtractor(data["description"])
     # freqCounter = CountFrequency(data["description"])
     # particular_words = ' '.join(extractor.extract_particular_words());
-    keytermExtractor = KeytermExtractor(data["description"])
-    # keytermExtractor2 = KeytermExtractor(particular_words)
+    keytermExtractor = KeytermExtractor(data["description"], TOP_N_VALUES)
     res = {
         "title": data["title"],
         "industry": data["industry"],
@@ -33,10 +34,12 @@ def extractJobDescriptionFromJobJSON(data):
         "employmentType": data["employmentType"],
         "entities": extractor.extract_entities(),
         # "pos_frequencies": freqCounter.count_frequency(),
-        "particular_words": extractor.extract_particular_words(),
-        "keyterms": keytermExtractor.get_keyterms_based_on_sgrank(),
-        "bi_grams": str(keytermExtractor.bi_gramchunker()),
-        "tri_grams": str(keytermExtractor.tri_gramchunker())
+        # "particular_words": str(extractor.extract_particular_words()),
+        # "keyterms": keytermExtractor.get_keyterms_based_on_sgrank(),
+        "keyterms_textrank" : keytermExtractor.get_keyterms_based_on_textrank(),
+        # "keyterms_scake": keytermExtractor.get_keyterms_based_on_scake(),
+        # "bi_grams": str(keytermExtractor.bi_gramchunker()),
+        # "tri_grams": str(keytermExtractor.tri_gramchunker())
     }
     return res
 

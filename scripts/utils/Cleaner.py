@@ -4,6 +4,7 @@ import spacy
 import nltk
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
+import string
 
 # Load the English model
 nlp = spacy.load('en_core_web_md')
@@ -13,7 +14,12 @@ nltk.download('stopwords')
 REGEX_PATTERNS = {
     'email_pattern': r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b',
     'phone_pattern': r"\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}",
-    'link_pattern': r'\b(?:https?://|www\.)\S+\b'
+    'link_pattern': r'\b(?:https?://|www\.)\S+\b',
+    'http_pattern': r'http\S+',
+    'email2_pattern': r'\S+@\S+',
+    'name_pattern': r'\b[A-Z][a-z]*([.]\s*|\s+)[A-Z][a-z]+\b',
+    'address_pattern': r'\b\d+\s+[A-Za-z]+\s+([A-Za-z]+\s*)*\b',
+    'linkedin_pattern': r'\blinkedin\.com/in/[A-Za-z0-9_-]+\b',
 }
 
 
@@ -61,7 +67,7 @@ class TextCleaner:
         doc = nlp(text)
         for token in doc:
             if token.pos_ == 'PUNCT':
-                text = text.replace(token.text, '')
+                text = text.replace(token.text, ' ')
         return str(text)
 
     def remove_stopwords(text):
@@ -110,7 +116,7 @@ class TextCleaner:
         return filtered_text
 
     def remove_entities(text):
-        entities_to_remove = {"GPE", "DATE"}
+        entities_to_remove = {"GPE", "DATE", "ORG", "PERSON"}
         # Process the text with SpaCy
         doc = nlp(text)
 
@@ -122,6 +128,14 @@ class TextCleaner:
         filtered_text = " ".join(filtered_tokens)
 
         return filtered_text
+    
+    def remove_puctuation(text):
+        # Use the translate method to remove punctuation
+        translator = str.maketrans("", "", string.punctuation)
+        text_without_punctuation = text.translate(translator)
+    
+        return text_without_punctuation
+
 
 
 class CountFrequency:

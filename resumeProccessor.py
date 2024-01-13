@@ -10,28 +10,29 @@ from scripts.utils.KeytermExtractor import KeytermExtractor
 
 PROJECT_PATH = "d:\My Work\My Subjects\Do an tot nghiep\code\job-recommendation-system"
 INPUT_PATH = "data\\txt_resumes2"
-SAVE_PATH = "data\\resumes\\resumes2.json"
+SAVE_PATH = "data\\resumes\\resumes3.json"
 
-MAX_TOKEN = 5000
+TOP_N_VALUES = 20
 
-custom_words = ["skill", "track", "university", "solutions", "work", "title", "|", "inc", "street", "state", "linkedin", "emailcom", "results", "objective"]
+custom_words = ["skill", "track", "university", "solutions", "work", "title", "|", "inc", "street", "state", "linkedin", "emailcom", "results", "objective", "project", "publication", "publications", "certification", "certifications", "programing", "language", "%"]
 
 def extractResumeFromText(data):
-    data = TextCleaner.remove_stopwords(data)
-    # print(data)
     data = TextCleaner.clean_text(data)
+    data = TextCleaner.remove_stopwords(data)
     data = TextCleaner.remove_custom_words(data, custom_words)
     extractor = DataExtractor(data)
     freqCounter = CountFrequency(data)
-    keytermExtractor = KeytermExtractor(data)
+    keytermExtractor = KeytermExtractor(data, 20)
     
     res = {
-        "particular_words": extractor.extract_particular_words(),
+        # "particular_words": extractor.extract_particular_words(),
         "entities": extractor.extract_entities(),
         # "pos_frequencies": freqCounter.count_frequency(),
-        "keyterms": keytermExtractor.get_keyterms_based_on_sgrank(),
-        "bi_grams": str(keytermExtractor.bi_gramchunker()),
-        "tri_grams": str(keytermExtractor.tri_gramchunker())
+        # "keyterms": keytermExtractor.get_keyterms_based_on_sgrank(),
+        "keyterms_textrank" : keytermExtractor.get_keyterms_based_on_textrank(),
+        # "keyterms_scake": keytermExtractor.get_keyterms_based_on_scake(),
+        # "bi_grams": str(keytermExtractor.bi_gramchunker()),
+        # "tri_grams": str(keytermExtractor.tri_gramchunker())
     }
     return res
 
