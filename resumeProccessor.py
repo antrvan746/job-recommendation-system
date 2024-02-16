@@ -9,8 +9,8 @@ from scripts.utils.FreqCounter import CountFrequency
 from scripts.utils.KeytermExtractor import KeytermExtractor
 
 PROJECT_PATH = "d:\My Work\My Subjects\Do an tot nghiep\code\job-recommendation-system"
-INPUT_PATH = "data\\txt_resumes2"
-SAVE_PATH = "data\\resumes\\resumes3.json"
+INPUT_PATH = "data\\txt_resumes"
+SAVE_PATH = "data\\resumes\\resumes4.json"
 
 TOP_N_VALUES = 20
 
@@ -21,7 +21,7 @@ def extractResumeFromText(data):
     data = TextCleaner.remove_stopwords(data)
     data = TextCleaner.remove_custom_words(data, custom_words)
     extractor = DataExtractor(data)
-    freqCounter = CountFrequency(data)
+    # freqCounter = CountFrequency(data)
     keytermExtractor = KeytermExtractor(data, 20)
     
     res = {

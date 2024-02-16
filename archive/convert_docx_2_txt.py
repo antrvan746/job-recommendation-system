@@ -4,7 +4,7 @@ import shutil
 import os
 
 PROJECT_PATH = "d:\My Work\My Subjects\Do an tot nghiep\code\job-recommendation-system"
-INPUT_PATH = "data\\raw_resumes"
+INPUT_PATH = "data\\raw_resumes2"
 SAVE_PATH = "data\\txt_resumes"
 
 def convertDocxToText(inputPath, outputPath):

@@ -2,6 +2,8 @@ from collections import OrderedDict
 import json
 import os
 import time
+import random
+import numpy
 
 import cohere
 from qdrant_client import QdrantClient, models
@@ -12,7 +14,7 @@ from numpy.linalg import norm
 
 
 PROJECT_PATH = "d:\My Work\My Subjects\Do an tot nghiep\code\job-recommendation-system"
-RESUME_DATA_PATH = "data\\resumes\\resumes3.json"
+RESUME_DATA_PATH = "data\\resumes\\resumes4.json"
 JOB_DESC_PATH = "data\\jds\\jobs5.json"
 CONFIG_PATH = "scripts\\models\\config.yml"
 
@@ -148,41 +150,63 @@ def get_similarity_score3(resume_string, job_description_string):
 
 if __name__ == "__main__":
     start = time.time()
-    # resume = resumeData[0]["particular_words"]
-    # resumeString = ' '.join(resume)
-    # resume = resumeData[16]["particular_words"] # + resumeData[0]["tri_grams"]
-    # resumeString = ' '.join(resume)
 
-    resume = resumeData[16]["keyterms_textrank"]
-    resumeString = ', '.join(map(lambda item: item[0], resume))
-    # resumeString = ', '.join(resumeData[0]["bi_grams"][1:len(resumeData[0]["bi_grams"])-1])
+    # n = 9 # random.randint(0, len(resumeData))
+    # resume = resumeData[n]["keyterms_textrank"]
+    # resumeString = ', '.join(map(lambda item: item[0], resume))
 
-    jds = {}
+    # jds = {}
 
-    # jobStrings = []
-    for i in range(len(jobsData)):  # len(jobsData)):
-        # job = jobsData[i]["particular_words"]
-        # jobString = ' '.join(job)
-        # job = jobsData[i]["particular_words"] # + jobsData[i]["tri_grams"]
-        # jobString = ' '.join(job)
+    # for i in range(len(jobsData)):
+    #     job = jobsData[i]["keyterms_textrank"]
+    #     jobString = jobsData[i]["title"] + " " + jobsData[i]["skills"] + " "
+    #     jobString += ', '.join(map(lambda item: item[0], job))
 
+    #     jds[jobsData[i]["title"]] = get_similarity_score2(
+    #         resumeString, jobString)
+
+    # ordered_dict = OrderedDict(sorted(jds.items(), key=lambda item: -item[1]))
+    # end = time.time()
+    # print(resumeData[n]["position"])
+    # print("Time train and sort data: ", (end - start) / 60)
+    # print("-----------------------------------------------------------")
+
+    # for key in ordered_dict:
+    #     print(key, "\t\t", ordered_dict[key])
+
+
+    # n = 2 # random.randint(0, len(jobsData))
+    # job = jobsData[n]["keyterms_textrank"]
+    # jobString = jobsData[n]["title"] + " " + jobsData[n]["skills"] + ', '.join(map(lambda item: item[0], job))
+
+    # resumes = {}
+
+    # for i in range(len(resumeData)):
+    #     resume = resumeData[i]["keyterms_textrank"]
+    #     resumeString = ', '.join(map(lambda item: item[0], resume))
+
+    #     resumes[resumeData[i]["position"]] = get_similarity_score2(
+    #         resumeString, jobString)
+
+    # ordered_dict = OrderedDict(sorted(resumes.items(), key=lambda item: -item[1]))
+    # end = time.time()
+    # print(jobsData[n]["title"])
+    # print("Time train and sort data: ", (end - start) / 60)
+    # print("-----------------------------------------------------------")
+
+    # for key in ordered_dict:
+    #     print(key, "\t\t", ordered_dict[key])
+
+    for i in range(10):
         job = jobsData[i]["keyterms_textrank"]
-        jobString = jobsData[i]["title"] + " " + jobsData[i]["skills"] + " "
-        jobString += ', '.join(map(lambda item: item[0], job))
+        jobString = jobsData[i]["title"] + " " + jobsData[i]["skills"] + ', '.join(map(lambda item: item[0], job))
+        print(jobsData[i]["title"], "\n", model.encode(jobString))
+        print()
 
-        # jobStrings.append(jobString)
-        jds[jobsData[i]["title"]] = get_similarity_score2(
-            resumeString, jobString)
+    # for i in range(10):
+    #     resume = resumeData[i]["keyterms_textrank"]
+    #     resumeString = ', '.join(map(lambda item: item[0], resume))
+    #     print(resumeData[i]["position"], "\n", model.encode(resumeString))
+    #     print()
 
-    ordered_dict = OrderedDict(sorted(jds.items(), key=lambda item: -item[1]))
-    end = time.time()
-    print(resumeData[16]["position"])
-    print("Time train and sort data: ", (end - start) / 60)
-    print("-----------------------------------------------------------")
-
-    # final_result = get_similarity_score2(resumeString, resumeString)
-    # for r in final_result:
-    #     print(r)
-
-    for key in ordered_dict:
-        print(key, "\t\t", ordered_dict[key])
+    
