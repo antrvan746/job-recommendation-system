@@ -10,11 +10,13 @@ from scripts.utils.KeytermExtractor import KeytermExtractor
 
 PROJECT_PATH = "d:\My Work\My Subjects\Do an tot nghiep\code\job-recommendation-system"
 INPUT_PATH = "data\\txt_resumes"
-SAVE_PATH = "data\\resumes\\resumes4.json"
+SAVE_PATH = "data\\resumes\\resumes-multirank.json"
 
 TOP_N_VALUES = 20
 
-custom_words = ["skill", "track", "university", "solutions", "work", "title", "|", "inc", "street", "state", "linkedin", "emailcom", "results", "objective", "project", "publication", "publications", "certification", "certifications", "programing", "language", "%"]
+# custom_words = ["skill", "track", "university", "solutions", "work", "title", "|", "inc", "street", "state", "linkedin", "emailcom", "results", "objective", "project", "publication", "publications", "certification", "certifications", "programing", "language", "%"]
+
+custom_words = ["%", "|", "nbsp"]
 
 def extractResumeFromText(data):
     data = TextCleaner.clean_text(data)
@@ -26,13 +28,17 @@ def extractResumeFromText(data):
     
     res = {
         # "particular_words": extractor.extract_particular_words(),
-        "entities": extractor.extract_entities(),
+        # "entities": extractor.extract_entities(),
         # "pos_frequencies": freqCounter.count_frequency(),
         # "keyterms": keytermExtractor.get_keyterms_based_on_sgrank(),
-        "keyterms_textrank" : keytermExtractor.get_keyterms_based_on_textrank(),
+        # "keyterms_textrank" : keytermExtractor.get_keyterms_based_on_textrank(),
         # "keyterms_scake": keytermExtractor.get_keyterms_based_on_scake(),
+        # "keyterms_yake" : keytermExtractor.get_keyterms_based_on_yake(),
         # "bi_grams": str(keytermExtractor.bi_gramchunker()),
-        # "tri_grams": str(keytermExtractor.tri_gramchunker())
+        # "tri_grams": str(keytermExtractor.tri_gramchunker()),
+        "keyterms_keybert" : keytermExtractor.get_keyterms_based_on_key_bert(),
+        # "keyterms_rakun2" : keytermExtractor.get_keyterms_based_on_rakun2(),
+        # "keyterms_multi_rank" : keytermExtractor.get_keyterms_based_on_multi_rank(),
     }
     return res
 
